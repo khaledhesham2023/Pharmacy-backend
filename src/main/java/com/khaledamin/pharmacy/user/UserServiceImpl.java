@@ -39,7 +39,19 @@ public class UserServiceImpl implements UserService {
     private JwtService jwtService;
 
     @Override
-    public SignupResponse signup(SignupRequest request) {
+    public SignupResponse signup(SignupRequest request, String language) {
+        String messageSuccess = "";
+        String messageFailed = "";
+        switch (language){
+            case "ar":
+                messageSuccess = "تم انشاء حساب المستخدم بنجاح , يرجى تأكيد الحساب";
+                messageFailed = "المستخدم موجود بالفعل";
+                break;
+            case "en":
+                messageSuccess = "Account created successfully. Please Verify your account.";
+                messageFailed = "User already exists";
+                break;
+        }
         UserEntity user = userRepo.findByUsername(request.getUsername());
         UserRole role = userRoleRepo.findByRoleName("USER_CUSTOMER");
         if (user == null) {
@@ -55,18 +67,29 @@ public class UserServiceImpl implements UserService {
                     .phone(request.getPhone())
                     .build();
             userRepo.save(newUser);
-            return new SignupResponse("User created successfully. Please Verify your account.", true, request.getEmail(), request.getUsername());
+            return new SignupResponse(messageSuccess, true, request.getEmail(), request.getUsername());
         }
-        return new SignupResponse("User already exists", false, user.getEmail(), user.getUsername());
+        return new SignupResponse(messageFailed, false, user.getEmail(), user.getUsername());
     }
 
     @Override
-    public LoginBaseResponse login(LoginRequest request) {
+    public LoginBaseResponse login(LoginRequest request, String language) {
+        String messageSuccess = "";
+        String messageFailed = "";
+        switch (language){
+            case "en":
+                messageSuccess = "User logged in successfully";
+                messageFailed = "Error logging in user, please verify account or try again.";
+                break;
+            case "ar":
+                messageSuccess = "تم تسجيل دخول المستخدم بنجاح";
+                messageFailed = "خطأ في تسجيل دخول المستخدم, برجاء تفعيل الحساب أو حاول مرة أخرى ";
+        }
         UserEntity user = userRepo.findByUsername(request.getUsername());
         if (user != null && passwordEncoder.matches(request.getPassword(), user.getPassword()) && user.isEnabled()) {
             return LoginBaseResponse.builder()
                     .status(true)
-                    .message("User logged in successfully")
+                    .message(messageSuccess)
                     .userData(LoginResponse.builder()
                             .id(user.getId())
                             .firstname(user.getFirstname())
@@ -83,7 +106,7 @@ public class UserServiceImpl implements UserService {
         } else {
             return LoginBaseResponse.builder()
                     .status(false)
-                    .message("Error logging in user, please verify account or try again.")
+                    .message(messageFailed)
                     .userData(null)
                     .build();
         }

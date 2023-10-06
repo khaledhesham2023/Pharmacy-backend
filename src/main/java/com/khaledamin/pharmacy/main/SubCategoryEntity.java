@@ -21,6 +21,10 @@ public class SubCategoryEntity {
     @NonNull
     private String subcategoryTitle;
 
+    @Column(name = "subcategory_title_ar",columnDefinition = "VARCHAR(255)")
+    @NonNull
+    private String subcategoryTitleAr;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "categoryId",referencedColumnName = "category_id")
     private CategoryEntity category;

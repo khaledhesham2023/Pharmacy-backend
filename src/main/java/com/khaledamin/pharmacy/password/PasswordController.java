@@ -16,30 +16,30 @@ public class PasswordController {
     @Autowired
     private PasswordService passwordService;
 
-    @PostMapping("sendOTP")
-    public ResponseEntity<PasswordResetResponse> sendOTP(@RequestBody @Valid PasswordResetRequest request) {
-        return ResponseEntity.ok(passwordService.sendOTP(request));
+    @PostMapping("{lang}/sendOTP")
+    public ResponseEntity<PasswordResetResponse> sendOTP(@RequestBody @Valid PasswordResetRequest request,@PathVariable("lang") String language) {
+        return ResponseEntity.ok(passwordService.sendOTP(request,language));
     }
 
-    @PostMapping("validateOTP")
-    public ResponseEntity<PasswordResetResponse> validateOTP(@RequestBody @Valid ValidateOTPRequest request) {
-        return ResponseEntity.ok(passwordService.validateOTP(request));
+    @PostMapping("{lang}/validateOTP")
+    public ResponseEntity<PasswordResetResponse> validateOTP(@RequestBody @Valid ValidateOTPRequest request, @PathVariable("lang") String language) {
+        return ResponseEntity.ok(passwordService.validateOTP(request,language));
     }
 
-    @PutMapping("changePassword")
+    @PutMapping("{lang}/changePassword")
     @PreAuthorize("hasAuthority('CHANGE_PASSWORD')")
-    public ResponseEntity<PasswordChangeResponse> changePassword(@RequestBody @Valid PasswordChangeRequest request) {
-        return ResponseEntity.ok(passwordService.changePassword(request));
+    public ResponseEntity<PasswordChangeResponse> changePassword(@RequestBody @Valid PasswordChangeRequest request, @PathVariable("lang") String language) {
+        return ResponseEntity.ok(passwordService.changePassword(request,language));
     }
 
-    @PostMapping("validateUser")
-    public ResponseEntity<PasswordChangeResponse> validateUser(@RequestBody @Valid ValidateOTPRequest request) {
-        return ResponseEntity.ok(passwordService.validateUser(request));
+    @PostMapping("{lang}/validateUser")
+    public ResponseEntity<PasswordChangeResponse> validateUser(@RequestBody @Valid ValidateOTPRequest request, @PathVariable("lang") String language) {
+        return ResponseEntity.ok(passwordService.validateUser(request,language));
     }
 
-    @PutMapping("resetPassword")
-    public ResponseEntity<PasswordChangeResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
-        return ResponseEntity.ok(passwordService.resetPassword(request));
+    @PutMapping("{lang}/resetPassword")
+    public ResponseEntity<PasswordChangeResponse> resetPassword(@RequestBody @Valid ResetPasswordRequest request, @PathVariable("lang") String language) {
+        return ResponseEntity.ok(passwordService.resetPassword(request,language));
     }
 
 }

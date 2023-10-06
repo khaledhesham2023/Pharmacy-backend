@@ -7,7 +7,7 @@ import com.khaledamin.pharmacy.model.signup.SignupResponse;
 
 public interface UserService {
 
-    SignupResponse signup(SignupRequest request);
+    SignupResponse signup(SignupRequest request, String language);
 
-    LoginBaseResponse login(LoginRequest request);
+    LoginBaseResponse login(LoginRequest request,String language);
 }

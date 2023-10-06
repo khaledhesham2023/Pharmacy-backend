@@ -30,17 +30,28 @@ public class PasswordService {
 
     Map<String, String> otpMap = new HashMap<>();
 
-    public PasswordResetResponse sendOTP(PasswordResetRequest request) {
+    public PasswordResetResponse sendOTP(PasswordResetRequest request, String language) {
         try {
             UserEntity user = userRepo.findByPhone(request.getNumber().substring(2));
             PhoneNumber to = new PhoneNumber(request.getNumber());
             PhoneNumber from = new PhoneNumber(twilioConfig.getTrial_number());
             String otp = generateOTP();
-            String otpMessage = "Welcome to Pharmacy, " + user.getUsername() + ". Your verification code is " + otp;
+            String otpMessage = "";
+            String message = "";
+            switch (language) {
+                case "ar":
+                    otpMessage = "مرحبا في صيدليتي , " + user.getUsername() + ". كود التفعيل هو " + otp;
+                    message = "تم ارسال الرسالة النصية بنجاح";
+                    break;
+                case "en":
+                    otpMessage = "Welcome to Pharmacy, " + user.getUsername() + ". Your verification code is " + otp;
+                    message = "Sms sent successfully";
+                    break;
+            }
             otpMap.put(user.getUsername(), otp);
             Message.creator(to, from, otpMessage).create();
             return PasswordResetResponse.builder()
-                    .message("Sms sent successfully")
+                    .message(message)
                     .status(OTPStatus.SENT)
                     .otp(otp)
                     .build();
@@ -58,68 +69,116 @@ public class PasswordService {
         return new DecimalFormat("0000").format(new Random().nextInt(9999));
     }
 
-    public PasswordResetResponse validateOTP(ValidateOTPRequest request) {
+    public PasswordResetResponse validateOTP(ValidateOTPRequest request, String language) {
+        String message = "";
+        String errorMessage = "";
+        switch (language) {
+            case "ar":
+                message = "كود التفعيل صالح , يمكنك الانتقال الى الخطوة التالية";
+                errorMessage = "كود التفعيل غير صالح , برجاء المحاولة مرة أخرى";
+                break;
+            case "en":
+                message = "Your verification code is valid, you can proceed to the next step.";
+                errorMessage = "Your verification code is invalid, please try again.";
+                break;
+        }
         UserEntity user = userRepo.findByPhone(request.getPhone());
         if (Objects.equals(request.getOtp(), otpMap.get(user.getUsername()))) {
             return PasswordResetResponse.builder()
-                    .message("Your verification code is valid, you can proceed to the next step.")
+                    .message(message)
                     .status(OTPStatus.VALID).build();
         } else {
             return PasswordResetResponse.builder()
-                    .message("Your verification code is invalid, please try again.")
+                    .message(errorMessage)
                     .status(OTPStatus.INVALID)
                     .build();
         }
     }
 
-    public PasswordChangeResponse changePassword(PasswordChangeRequest request) {
+    public PasswordChangeResponse changePassword(PasswordChangeRequest request, String language) {
+        String message = "";
+        String errorMessage = "";
+        switch (language) {
+            case "ar":
+                message = "تم تغيير كلمة المرور بنجاح";
+                errorMessage = "خطأ أثناء تغيير كلمة المرور";
+                break;
+            case "en":
+                message = "Password Changed successfully.";
+                errorMessage = "Error during changing password.";
+                break;
+        }
         UserEntity user = userRepo.findByUsername(request.getUsername());
         String newPassword = passwordEncoder.encode(request.getNewPassword());
         if (user != null && request.getNewPassword().equals(request.getConfirmNewPassword())) {
             userRepo.changePassword(newPassword, user.getId());
             return PasswordChangeResponse.builder()
                     .status(true)
-                    .message("Password Changed successfully.")
+                    .message(message)
                     .build();
         } else {
             return PasswordChangeResponse.builder()
                     .status(false)
-                    .message("Error during changing password.")
+                    .message(errorMessage)
                     .build();
         }
     }
 
-    public PasswordChangeResponse validateUser(ValidateOTPRequest request) {
+    public PasswordChangeResponse validateUser(ValidateOTPRequest request,String language) {
         UserEntity user = userRepo.findByPhone(request.getPhone());
+        String message = "";
+        String errorMessage = "";
+        switch (language){
+            case "ar":
+                message = "حساب المستخدم صالح , يمكنك تسجيل الدخول الأن باستخدام الحساب.";
+                errorMessage = "خطأ أثناء تفعيل حساب المستخدم";
+                break;
+            case "en":
+                message = "User is valid, You can sign in now with your account.";
+                errorMessage = "Error during validating user account.";
+                break;
+        }
         if (request.getOtp().equals(otpMap.get(user.getUsername()))) {
             userRepo.setEnabled(user.getId());
             otpMap.remove(user.getUsername());
             return PasswordChangeResponse.builder()
                     .status(true)
-                    .message("User is valid, You can sign in now with your account.")
+                    .message(message)
                     .build();
         } else {
             return PasswordChangeResponse.builder()
                     .status(false)
-                    .message("Error during validating user account.")
+                    .message(errorMessage)
                     .build();
         }
     }
 
-    public PasswordChangeResponse resetPassword(ResetPasswordRequest request) {
+    public PasswordChangeResponse resetPassword(ResetPasswordRequest request, String language) {
         try {
             UserEntity user = userRepo.findByPhone(request.getPhoneNumber());
+            String message = "";
+            String errorMessage = "";
+            switch (language){
+                case "ar":
+                    message = "تم اعادة تعيين كلمة المرور بنجاح";
+                    errorMessage = "كلمة المرور مماثلة لكلمة المرور الحالية";
+                    break;
+                case "en":
+                    message = "Password reset successfully";
+                    errorMessage = "Password already matches the existing one.";
+                    break;
+            }
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 String newPassword = passwordEncoder.encode(request.getPassword());
                 userRepo.changePassword(newPassword, user.getId());
                 return PasswordChangeResponse.builder()
                         .status(true)
-                        .message("Password reset successfully")
+                        .message(message)
                         .build();
             } else {
                 return PasswordChangeResponse.builder()
                         .status(false)
-                        .message("Password already matches the existing one.")
+                        .message(errorMessage)
                         .build();
             }
         } catch (Exception e) {

@@ -23,4 +23,9 @@ public class AddressTypeEntity {
 
     @Column(name = "type_name",columnDefinition = "VARCHAR(255)")
     private String typeName;
+
+    @Column(name = "type_name_ar",columnDefinition = "VARCHAR(255)")
+    private String typeNameAr;
+
+
 }

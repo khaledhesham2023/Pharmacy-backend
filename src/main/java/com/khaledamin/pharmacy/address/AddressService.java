@@ -3,11 +3,13 @@ package com.khaledamin.pharmacy.address;
 import com.khaledamin.pharmacy.base.BaseResponse;
 import com.khaledamin.pharmacy.base.BaseResponseWithData;
 import com.khaledamin.pharmacy.model.address.*;
+import com.khaledamin.pharmacy.model.addresstype.AddressTypeModel;
 import com.khaledamin.pharmacy.user.UserEntity;
 import com.khaledamin.pharmacy.user.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -140,7 +142,21 @@ public class AddressService {
                 .message("Address set as default")
                 .build();
     }
-    public List<AddressTypeEntity> getAddressTypes(){
-        return addressTypeRepo.findAll();
+    public List<AddressTypeModel> getAddressTypes(String language){
+        List<AddressTypeEntity> addressTypes = addressTypeRepo.findAll();
+        List<AddressTypeModel> addressTypeModels = new ArrayList<>();
+        for (AddressTypeEntity addressType : addressTypes){
+            switch (language){
+                case "ar":
+                    AddressTypeModel addressTypeModelAr = AddressTypeModel.builder().typeId(addressType.getTypeId()).typeName(addressType.getTypeNameAr()).build();
+                    addressTypeModels.add(addressTypeModelAr);
+                    break;
+                case "en":
+                    AddressTypeModel addressTypeModel = AddressTypeModel.builder().typeId(addressType.getTypeId()).typeName(addressType.getTypeName()).build();
+                    addressTypeModels.add(addressTypeModel);
+                    break;
+            }
+        }
+        return addressTypeModels;
     }
 }

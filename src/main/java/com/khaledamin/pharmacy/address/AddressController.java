@@ -3,6 +3,7 @@ package com.khaledamin.pharmacy.address;
 import com.khaledamin.pharmacy.base.BaseResponse;
 import com.khaledamin.pharmacy.base.BaseResponseWithData;
 import com.khaledamin.pharmacy.model.address.*;
+import com.khaledamin.pharmacy.model.addresstype.AddressTypeModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,10 +48,10 @@ public class AddressController {
         return ResponseEntity.ok(addressService.setDefaultAddress(addressId,request));
     }
 
-    @GetMapping("/addresses/types")
+    @GetMapping("{language}/addresses/types")
     @PreAuthorize("hasAuthority('EDIT_ADDRESSES')")
-    public ResponseEntity<List<AddressTypeEntity>> getAddressTypes(){
-        return ResponseEntity.ok(addressService.getAddressTypes());
+    public ResponseEntity<List<AddressTypeModel>> getAddressTypes(@PathVariable("language") String language){
+        return ResponseEntity.ok(addressService.getAddressTypes(language));
     }
 
 }
