@@ -14,4 +14,8 @@ public interface SubCategoryRepo extends JpaRepository<SubCategoryEntity,Long> {
 //    List<SubCategoryEntity> findAllSubCategories(@Param("id") long categoryId);
 
     List<SubCategoryEntity> findByCategory(CategoryEntity category);
+
+    @Query(value = "select category_id from subcategories where subcategory_id = :id",nativeQuery = true)
+    long getCategoryId(@Param("id") long subcategoryId);
+
 }

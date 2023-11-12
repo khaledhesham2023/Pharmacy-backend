@@ -26,78 +26,57 @@ public class CartService {
     private CartRepo cartRepo;
 
     public BaseResponse addItemToCart(CreateCartRequest request) {
-        ProductEntity product = productRepo.findById(request.getProductId()).orElseThrow();
-        UserEntity user = userRepo.findById(request.getUserId()).orElseThrow();
-        List<CartEntity> carts = cartRepo.findByUser(user);
-        for (CartEntity cart : carts){
-            if (request.getProductId() == cart.getProduct().getProductId()){
-                cart.setQuantity(request.getQuantity());
-                cartRepo.save(cart);
-                return BaseResponse.builder().status(true).message("Quantity updated successfully").build();
-            }
-        }
-        CartEntity cart = new CartEntity();
-        cart.setProduct(product);
-        cart.setUser(user);
-        cart.setQuantity(request.getQuantity());
-        cartRepo.save(cart);
-        return BaseResponse.builder()
-                .status(true)
-                .message("Product added successfully")
-                .build();
-    }
-
-    public List<CartProductItem> getCartProductsByCartId(long cartId) {
-        List<CartProductItem> cartProductItems = new ArrayList<>();
-        UserEntity user = userRepo.findById(cartId).orElseThrow();
-        List<CartEntity> userCarts = cartRepo.findByUser(user);
-        for (CartEntity cart : userCarts) {
-            CartProductItem cartProductItem = CartProductItem.builder()
-                    .productId(cart.getProduct().getProductId())
-                    .productImage(cart.getProduct().getProductImage())
-                    .productActivePrincipal(cart.getProduct().getProductActivePrincipal())
-                    .productDetails(cart.getProduct().getProductDetails())
-                    .productWeight(cart.getProduct().getProductId())
-                    .productUnit(cart.getProduct().getProductUnit())
-                    .productPackPrice(cart.getProduct().getProductPackPrice())
-                    .productUnitPrice(cart.getProduct().getProductUnitPrice())
-                    .productBrand(cart.getProduct().getProductBrand())
-                    .productName(cart.getProduct().getProductName())
-                    .productRate(cart.getProduct().getProductRate())
-                    .quantity(cart.getQuantity())
+        CartEntity cartItem = cartRepo.findByUserAndProduct(userRepo.findById(request.getUserId()).orElseThrow(), productRepo.findById(request.getProductId()).orElseThrow());
+        if (cartItem == null) {
+            CartEntity newCartItem = CartEntity.builder()
+                    .product(productRepo.findById(request.getProductId()).orElseThrow())
+                    .user(userRepo.findById(request.getUserId()).orElseThrow())
+                    .quantity(request.getQuantity())
                     .build();
-            cartProductItems.add(cartProductItem);
-        }
-        return cartProductItems;
-    }
-
-    public BaseResponse updateQuantity(UpdateQuantityRequest request){
-        UserEntity user = userRepo.findById(request.getUserId()).orElseThrow();
-        ProductEntity product = productRepo.findById(request.getProductId()).orElseThrow();
-        CartEntity cart = cartRepo.findByUserAndProduct(user,product);
-        cart.setQuantity(request.getQuantity());
-        cartRepo.save(cart);
-        return BaseResponse.builder()
-                .status(true)
-                .message("Quantity updated successfully")
-                .build();
-    }
-
-    public BaseResponse removeProduct(RemoveProductRequest request) {
-        UserEntity user = userRepo.findById(request.getUserId()).orElseThrow();
-        ProductEntity product = productRepo.findById(request.getProductId()).orElseThrow();
-        CartEntity cart = cartRepo.findByUserAndProduct(user, product);
-        if (cart != null) {
-            cartRepo.delete(cart);
+            cartRepo.save(newCartItem);
             return BaseResponse.builder()
                     .status(true)
-                    .message("Product removed successfully")
+                    .message("Product added successfully")
                     .build();
         } else {
+            cartItem.setQuantity(request.getQuantity());
+            cartRepo.save(cartItem);
             return BaseResponse.builder()
-                    .status(false)
-                    .message("Product doesn't exist in that cart")
+                    .message("Product Quantity updated successfully")
+                    .status(true)
                     .build();
         }
+        }
+
+        public List<CartEntity> getCartProductsByCartId ( long cartId){
+            UserEntity user = userRepo.findById(cartId).orElseThrow();
+            List<CartEntity> userCarts = cartRepo.findByUser(user);
+            return userCarts;
+        }
+
+        public BaseResponse updateQuantity (UpdateQuantityRequest request){
+            CartEntity cart = cartRepo.findByUserAndProduct(userRepo.findById(request.getUserId()).orElseThrow(), productRepo.findById(request.getProductId()).orElseThrow());
+            cart.setQuantity(request.getQuantity());
+            cartRepo.save(cart);
+            return BaseResponse.builder()
+                    .status(true)
+                    .message("Quantity updated successfully")
+                    .build();
+        }
+
+        public BaseResponse removeProduct (RemoveProductRequest request){
+            CartEntity cart = cartRepo.findByUserAndProduct(userRepo.findById(request.getUserId()).orElseThrow(), productRepo.findById(request.getProductId()).orElseThrow());
+            if (cart != null) {
+                cartRepo.delete(cart);
+                return BaseResponse.builder()
+                        .status(true)
+                        .message("Product removed successfully")
+                        .build();
+            } else {
+                return BaseResponse.builder()
+                        .status(false)
+                        .message("Product doesn't exist in that cart")
+                        .build();
+            }
+        }
     }
-}

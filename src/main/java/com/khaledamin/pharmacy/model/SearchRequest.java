@@ -1,15 +1,15 @@
-package com.khaledamin.pharmacy.model.product;
+package com.khaledamin.pharmacy.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
-public class GetRelatedProductsRequest {
-    private int page;
-    private long productId;
+public class SearchRequest {
+
+    private String query;
 }

@@ -20,6 +20,5 @@ public class PasswordChangeRequest {
 
     private String confirmNewPassword;
     @NonNull
-    @NotBlank(message = "Username must be provided")
-    private String username;
+    private long userId;
 }

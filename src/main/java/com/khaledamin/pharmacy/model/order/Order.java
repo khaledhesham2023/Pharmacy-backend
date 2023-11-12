@@ -29,7 +29,7 @@ public class Order {
     private String firstname;
     private String lastname;
     private String incrementId;
-    private List<CartProductItem> products;
+    private List<OrderItemsEntity> products;
     private String payment;
     private String status;
 }

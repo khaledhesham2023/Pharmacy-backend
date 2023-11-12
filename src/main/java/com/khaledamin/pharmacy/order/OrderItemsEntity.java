@@ -1,5 +1,6 @@
 package com.khaledamin.pharmacy.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.khaledamin.pharmacy.main.ProductEntity;
 import com.khaledamin.pharmacy.user.UserEntity;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,11 @@ public class OrderItemsEntity {
     private long orderItemId;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "userId",referencedColumnName = "user_id")
     private UserEntity user;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "productId",referencedColumnName = "product_id")
     private ProductEntity product;
 
@@ -32,6 +34,7 @@ public class OrderItemsEntity {
     private int quantity;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "orderId",referencedColumnName = "order_id")
     private OrderEntity order;
 

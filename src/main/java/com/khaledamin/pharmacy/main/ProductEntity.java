@@ -1,5 +1,6 @@
 package com.khaledamin.pharmacy.main;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,9 +21,6 @@ public class ProductEntity {
     @NonNull
     private String productName;
 
-    @Column(name = "product_name_ar", columnDefinition = "VARCHAR(255)")
-    @NonNull
-    private String productNameAr;
 
     @Column(name = "product_image",columnDefinition = "VARCHAR(255)")
     @NonNull
@@ -32,9 +30,6 @@ public class ProductEntity {
     @NonNull
     private String productBrand;
 
-    @Column(name = "product_brand_ar", columnDefinition = "VARCHAR(255)")
-    @NonNull
-    private String productBrandAr;
 
     @Column(name = "product_unit_price", columnDefinition = "DOUBLE")
     private double productUnitPrice;
@@ -45,9 +40,6 @@ public class ProductEntity {
     @Column(name = "product_unit", columnDefinition = "VARCHAR(255)")
     private String productUnit;
 
-    @Column(name = "product_unit_ar", columnDefinition = "VARCHAR(255)")
-    private String productUnitAr;
-
     @Column(name = "product_weight", columnDefinition = "VARCHAR(255)")
     private double productWeight;
 
@@ -57,17 +49,13 @@ public class ProductEntity {
     @Column(name = "product_details",columnDefinition = "LONGTEXT")
     private String productDetails;
 
-    @Column(name = "product_details_ar",columnDefinition = "LONGTEXT")
-    private String productDetailsAr;
 
     @Column(name = "product_active_principle",columnDefinition = "VARCHAR(255)")
     private String productActivePrincipal;
 
-    @Column(name = "product_active_principle_ar",columnDefinition = "VARCHAR(255)")
-    private String productActivePrincipalAr;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subcategoryId",referencedColumnName = "subcategory_id")
+    @JsonIgnore
     private SubCategoryEntity subcategory;
 
     @Column(name = "manufacturer",columnDefinition = "VARCHAR(255)")

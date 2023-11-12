@@ -1,5 +1,6 @@
 package com.khaledamin.pharmacy.order;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.khaledamin.pharmacy.address.AddressEntity;
 import com.khaledamin.pharmacy.payment.PaymentEntity;
 import com.khaledamin.pharmacy.shipping.ShippingEntity;
@@ -7,6 +8,8 @@ import com.khaledamin.pharmacy.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +48,7 @@ public class OrderEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id", referencedColumnName = "user_id")
+    @JsonIgnore
     private UserEntity user;
 
     @Column(name = "increment_id", columnDefinition = "VARCHAR(255)")

@@ -1,4 +1,4 @@
-package com.khaledamin.pharmacy.model.product;
+package com.khaledamin.pharmacy.model.favorites;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class GetRelatedProductsRequest {
-    private int page;
+public class AddToFavoritesRequest {
+
+    private long userId;
     private long productId;
 }

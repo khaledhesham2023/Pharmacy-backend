@@ -23,4 +23,7 @@ public class PaymentEntity {
 
     @Column(name = "payment_name",columnDefinition = "VARCHAR(255)")
     private String paymentName;
+
+    @Column(name = "payment_image",columnDefinition = "VARCHAR(255)")
+    private String paymentIcon;
 }

@@ -20,6 +20,6 @@ spring:
     enabled: true
 
 twilio:
-  account_sid: ACd8f3a223e7a391986e74341eefcd2db4
-  auth_token: 44631095760510cd1907dc82be065bf8
-  trial_number: +12362390237
+  account_sid: AC452915894150d36cc4f94581722e37f7
+  auth_token: 493d5fa454ec8811f9d68c45696e3e54
+  trial_number: +12105260581

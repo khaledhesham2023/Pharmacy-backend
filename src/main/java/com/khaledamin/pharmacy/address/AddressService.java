@@ -69,7 +69,7 @@ public class AddressService {
                     .addressName(request.getAddressName())
                     .phone(request.getPhone())
                     .isDefault(request.getIsDefault())
-                    .type(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow().getTypeName())
+                    .addressType(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow())
                     .build());
             userRepo.save(user);
         } else {
@@ -87,7 +87,7 @@ public class AddressService {
                     .addressName(request.getAddressName())
                     .phone(request.getPhone())
                     .isDefault(request.getIsDefault())
-                    .type(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow().getTypeName())
+                    .addressType(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow())
                     .build());
             userRepo.save(user);
         }
@@ -112,7 +112,7 @@ public class AddressService {
                 address.setAdditionalDetails(request.getAdditionalDetails());
                 address.setCity(request.getCity());
                 address.setGovernorate(request.getGovernorate());
-                address.setType(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow().getTypeName());
+                address.setAddressType(addressTypeRepo.findById(request.getAddressTypeId()).orElseThrow());
                 user.setAddresses(userAddresses);
                 userRepo.save(user);
                 return AddAddressResponse.builder()
@@ -142,21 +142,7 @@ public class AddressService {
                 .message("Address set as default")
                 .build();
     }
-    public List<AddressTypeModel> getAddressTypes(String language){
-        List<AddressTypeEntity> addressTypes = addressTypeRepo.findAll();
-        List<AddressTypeModel> addressTypeModels = new ArrayList<>();
-        for (AddressTypeEntity addressType : addressTypes){
-            switch (language){
-                case "ar":
-                    AddressTypeModel addressTypeModelAr = AddressTypeModel.builder().typeId(addressType.getTypeId()).typeName(addressType.getTypeNameAr()).build();
-                    addressTypeModels.add(addressTypeModelAr);
-                    break;
-                case "en":
-                    AddressTypeModel addressTypeModel = AddressTypeModel.builder().typeId(addressType.getTypeId()).typeName(addressType.getTypeName()).build();
-                    addressTypeModels.add(addressTypeModel);
-                    break;
-            }
-        }
-        return addressTypeModels;
+    public List<AddressTypeEntity> getAddressTypes(){
+        return addressTypeRepo.findAll();
     }
 }

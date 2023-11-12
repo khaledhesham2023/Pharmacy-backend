@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Category {
     private Long id;
-    private String categoryTitle;
+    private String categoryTitleAr;
     private String categoryImage;
 }

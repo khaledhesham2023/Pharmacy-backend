@@ -1,5 +1,6 @@
 package com.khaledamin.pharmacy.cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.khaledamin.pharmacy.main.ProductEntity;
 import com.khaledamin.pharmacy.user.UserEntity;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class CartEntity {
     @Column(name = "cart_id")
     private long cartId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "userId",referencedColumnName = "user_id")
     private UserEntity user;

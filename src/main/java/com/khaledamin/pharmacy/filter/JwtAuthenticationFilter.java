@@ -2,6 +2,7 @@ package com.khaledamin.pharmacy.filter;
 
 
 import com.khaledamin.pharmacy.user.UserEntity;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,26 +22,13 @@ import java.io.IOException;
 @Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-//    public static final String[] PERMITTED_PATHS = SecurityConfig.PERMITTED_PATHS;
+    //    public static final String[] PERMITTED_PATHS = SecurityConfig.PERMITTED_PATHS;
     @Autowired
     private UserDetailsService userDetailsService;
 
 
     @Autowired
     private JwtService jwtService;
-
-
-//    public boolean isPathPermitted(String path) {
-//        for (String permittedPath :
-//                PERMITTED_PATHS
-//        ) {
-//            if (path.matches(permittedPath)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
 
     @Override
     protected void doFilterInternal(
@@ -56,16 +44,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        username = jwtService.generateUsernameFromToken(jwt);
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserEntity user = (UserEntity) this.userDetailsService.loadUserByUsername(username);
+        try {
+            username = jwtService.generateUsernameFromToken(jwt);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserEntity user = (UserEntity) this.userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(jwt, user)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (jwtService.isTokenValid(jwt, user)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        filterChain.doFilter(request, response);
+
     }
 }

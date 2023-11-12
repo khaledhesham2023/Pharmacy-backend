@@ -25,4 +25,5 @@ public class LoginResponse {
     private String token;
     private Collection<String> roles;
     private Collection<AddressEntity> addresses;
+    private boolean isVerified;
 }

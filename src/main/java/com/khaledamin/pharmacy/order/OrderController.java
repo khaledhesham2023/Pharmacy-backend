@@ -4,6 +4,7 @@ import com.khaledamin.pharmacy.base.BaseResponse;
 import com.khaledamin.pharmacy.model.order.CreateOrderRequest;
 import com.khaledamin.pharmacy.model.order.CreateOrderResponse;
 import com.khaledamin.pharmacy.model.order.Order;
+import com.khaledamin.pharmacy.model.order.ReorderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,12 +26,12 @@ public class OrderController {
 
     @GetMapping("getCurrentOrders/{userId}")
     @PreAuthorize("hasAuthority('ORDERS')")
-    public ResponseEntity<List<Order>> getCurrentOrders(@PathVariable("userId") long userId){
+    public ResponseEntity<List<OrderEntity>> getCurrentOrders(@PathVariable("userId") long userId){
         return ResponseEntity.ok(orderService.getCurrentOrders(userId));
     }
     @GetMapping("getPreviousOrders/{userId}")
     @PreAuthorize("hasAuthority('ORDERS')")
-    public ResponseEntity<List<Order>> getPreviousOrders(@PathVariable("userId") long userId) {
+    public ResponseEntity<List<OrderEntity>> getPreviousOrders(@PathVariable("userId") long userId) {
         return ResponseEntity.ok(orderService.getPreviousOrders(userId));
     }
 
@@ -40,9 +41,9 @@ public class OrderController {
         return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
 
-    @PutMapping("reorder/{userId}/{orderId}")
+    @PostMapping("reorder")
     @PreAuthorize("hasAuthority('ORDERS')")
-    public ResponseEntity<CreateOrderResponse> reorder(@PathVariable("userId") long userId, @PathVariable("orderId") long orderId){
-        return ResponseEntity.ok(orderService.reorder(userId,orderId));
+    public ResponseEntity<CreateOrderResponse> reorder(@RequestBody ReorderRequest request){
+        return ResponseEntity.ok(orderService.reorder(request));
     }
 }

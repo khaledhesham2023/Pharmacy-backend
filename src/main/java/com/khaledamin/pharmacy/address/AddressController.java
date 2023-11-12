@@ -48,10 +48,10 @@ public class AddressController {
         return ResponseEntity.ok(addressService.setDefaultAddress(addressId,request));
     }
 
-    @GetMapping("{language}/addresses/types")
+    @GetMapping("addresses/types")
     @PreAuthorize("hasAuthority('EDIT_ADDRESSES')")
-    public ResponseEntity<List<AddressTypeModel>> getAddressTypes(@PathVariable("language") String language){
-        return ResponseEntity.ok(addressService.getAddressTypes(language));
+    public ResponseEntity<List<AddressTypeEntity>> getAddressTypes(){
+        return ResponseEntity.ok(addressService.getAddressTypes());
     }
 
 }

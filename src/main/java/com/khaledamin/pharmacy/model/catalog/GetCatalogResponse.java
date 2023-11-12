@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GetCatalogResponse {
-    private List<Slider> sliders;
-    private List<Category> categories;
+    private List<SliderEntity> sliders;
+    private List<CategoryEntity> categories;
 
 }

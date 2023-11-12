@@ -22,4 +22,10 @@ public interface AddressRepo extends JpaRepository<AddressEntity,Long> {
     @Modifying
     void addUserAddress(@Param("id") long userId,@Param("addressId") long addressId);
 
+    @Query(value = "SELECT * FROM pharmacydb.addresses a inner join pharmacydb.users_addresses_table uat on a.address_id = uat.address_id inner join users u on uat.id = u.user_id  where uat.id = :userId and uat.address_id = :addressId;", nativeQuery = true)
+    AddressEntity findAddressByUserIdAndAddressId(@Param("userId") long userId,@Param("addressId") long addressId);
+
+    @Query(value = "SELECT * FROM addresses a LEFT JOIN users_addresses_table uat ON a.address_id = uat.address_id LEFT JOIN users u ON uat.id = u.user_id WHERE u.user_id = :userId AND a.is_default = true",nativeQuery = true)
+    AddressEntity findByUserAndDefaultAddress(@Param("userId") long userId);
+
 }

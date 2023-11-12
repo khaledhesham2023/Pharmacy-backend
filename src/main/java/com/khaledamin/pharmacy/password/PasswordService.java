@@ -50,6 +50,7 @@ public class PasswordService {
             }
             otpMap.put(user.getUsername(), otp);
             Message.creator(to, from, otpMessage).create();
+//            user.getNotifications().add()
             return PasswordResetResponse.builder()
                     .message(message)
                     .status(OTPStatus.SENT)
@@ -108,7 +109,7 @@ public class PasswordService {
                 errorMessage = "Error during changing password.";
                 break;
         }
-        UserEntity user = userRepo.findByUsername(request.getUsername());
+        UserEntity user = userRepo.findById(request.getUserId()).orElseThrow();
         String newPassword = passwordEncoder.encode(request.getNewPassword());
         if (user != null && request.getNewPassword().equals(request.getConfirmNewPassword())) {
             userRepo.changePassword(newPassword, user.getId());

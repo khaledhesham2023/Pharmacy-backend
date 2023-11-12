@@ -12,9 +12,9 @@ public class CatalogController {
     @Autowired
     private CatalogService catalogService;
 
-    @GetMapping("catalog/{lang}")
-    public ResponseEntity<GetCatalogResponse> getCatalog(@PathVariable String lang){
-        return ResponseEntity.ok(catalogService.getCatalog(lang));
+    @GetMapping("catalog")
+    public ResponseEntity<GetCatalogResponse> getCatalog(){
+        return ResponseEntity.ok(catalogService.getCatalog());
     }
 
 

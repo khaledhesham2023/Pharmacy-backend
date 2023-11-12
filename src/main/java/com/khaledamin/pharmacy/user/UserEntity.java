@@ -1,6 +1,9 @@
 package com.khaledamin.pharmacy.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.khaledamin.pharmacy.address.AddressEntity;
+import com.khaledamin.pharmacy.main.ProductEntity;
+import com.khaledamin.pharmacy.notification.NotificationEntity;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,6 +60,12 @@ public class UserEntity implements UserDetails {
     @NonNull
     private String code;
 
+    @ManyToMany
+    @JoinTable(name = "user_products_table",
+            joinColumns = @JoinColumn(name = "id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "productId", referencedColumnName = "product_id"))
+    private Collection<ProductEntity> favoriteProducts;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles_table",
             joinColumns = @JoinColumn(name = "id", referencedColumnName = "user_id"),
@@ -79,29 +88,37 @@ public class UserEntity implements UserDetails {
         }
         return grantedAuthorities;
     }
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_addresses_table",
             joinColumns = @JoinColumn(name = "id", referencedColumnName = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "addressId", referencedColumnName = "address_id"))
     private List<AddressEntity> addresses;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(joinColumns = @JoinColumn(name = "id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "notificationId", referencedColumnName = "notification_id"))
+    private Collection<NotificationEntity> notifications;
+
     @Override
     public @NonNull String getPassword() {
         return this.password;
     }
+
     @Override
     public @NonNull String getUsername() {
         return this.username;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+
     @Override
     public boolean isCredentialsNonExpired() {
         return true;

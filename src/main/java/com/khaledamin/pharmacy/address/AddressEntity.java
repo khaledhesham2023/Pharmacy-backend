@@ -36,32 +36,33 @@ public class AddressEntity {
     private double latitude;
     @Column(name = "longitude", columnDefinition = "DOUBLE")
     private double longitude;
-    @Column(name = "governorate",columnDefinition = "VARCHAR(255)")
+    @Column(name = "governorate", columnDefinition = "VARCHAR(255)")
     @NonNull
     private String governorate;
-    @Column(name = "city",columnDefinition = "VARCHAR(255)")
+    @Column(name = "city", columnDefinition = "VARCHAR(255)")
     @NonNull
     private String city;
 
-    @Column(name = "phone",columnDefinition = "VARCHAR(255)")
+    @Column(name = "phone", columnDefinition = "VARCHAR(255)")
     @NonNull
     private String phone;
 
-    @Column(name = "is_default",columnDefinition = "boolean")
+    @Column(name = "is_default", columnDefinition = "boolean")
     private boolean isDefault;
 
-    @Column(name = "address_name",columnDefinition = "VARCHAR(255)")
+    @Column(name = "address_name", columnDefinition = "VARCHAR(255)")
     private String addressName;
 
-   @Column(name = "address_type",columnDefinition = "VARCHAR(255)")
-    private String type;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "typeId",referencedColumnName = "type_id")
+    private AddressTypeEntity addressType;
 
-    public String getType() {
-        return type;
+    public AddressTypeEntity getAddressType() {
+        return addressType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setAddressType(AddressTypeEntity addressType) {
+        this.addressType = addressType;
     }
 
     public long getAddressId() {

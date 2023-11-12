@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
-public class GetRelatedProductsRequest {
-    private int page;
-    private long productId;
+public class FilterRequest {
+
+    private long subcategoryId;
+    private int pageNo;
 }

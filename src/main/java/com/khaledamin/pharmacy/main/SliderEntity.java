@@ -18,15 +18,15 @@ public class SliderEntity {
     @Column(name = "slider_id",columnDefinition = "BIGINT")
     private long sliderId;
 
-    @Column(name = "slider_title_ar",columnDefinition = "VARCHAR(255)")
+    @Column(name = "slider_title",columnDefinition = "VARCHAR(255)")
     @NonNull
-    private String sliderTitleAr;
+    private String sliderTitle;
 
     @Column(name = "slider_image",columnDefinition = "VARCHAR(255)")
     @NonNull
     private String sliderImage;
 
-    @Column(name = "slider_title",columnDefinition = "VARCHAR(255)")
-    @NonNull
-    private String sliderTitle;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "productId",referencedColumnName = "product_id")
+    private ProductEntity product;
 }

@@ -23,7 +23,7 @@ public class CartController {
     }
     @GetMapping("cart/getUserCarts/{id}")
     @PreAuthorize("hasAuthority('CREATE_CART')")
-    public ResponseEntity<List<CartProductItem>> getCartProductsByCartId(@PathVariable("id") long cartId) {
+    public ResponseEntity<List<CartEntity>> getCartProductsByCartId(@PathVariable("id") long cartId) {
         return ResponseEntity.ok(cartService.getCartProductsByCartId(cartId));
     }
 

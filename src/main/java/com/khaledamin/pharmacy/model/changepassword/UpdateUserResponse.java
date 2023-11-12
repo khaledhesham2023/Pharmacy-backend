@@ -1,7 +1,7 @@
-package com.khaledamin.pharmacy.model.order;
+package com.khaledamin.pharmacy.model.changepassword;
 
 import com.khaledamin.pharmacy.base.BaseResponse;
-import com.khaledamin.pharmacy.order.OrderEntity;
+import com.khaledamin.pharmacy.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
-public class CreateOrderResponse {
+@Builder
+public class UpdateUserResponse {
     private BaseResponse response;
-    private OrderEntity order;
+    private User user;
 }
